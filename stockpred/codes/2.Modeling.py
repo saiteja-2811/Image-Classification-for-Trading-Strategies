@@ -4,9 +4,13 @@ from keras.preprocessing.image import ImageDataGenerator
 import tensorflow_addons as tfa
 # Part 1 - Data Preprocessing
 root_dir = "C:/Users/saite/PycharmProjects/py38"
-target_dir = root_dir + "/ML Project/stockpred/models/"
+target_dir = root_dir + "/Image-Classification-for-Trading-Strategies/stockpred/models/"
 
-methods = ['BPS','BHPS','BPHS']
+# approach = ['BB','RSI','MACD']
+approach = ['RSI']
+methods = ['BPS']
+# methods = ['BPS','BHPS','BPHS']
+
 train_data_dir = str()
 validation_data_dir = str()
 save_path1 = str()
@@ -62,7 +66,7 @@ def model_func(train_data_dir,validation_data_dir,save_path1,save_path2):
     cnn.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy',
                                                                              tf.keras.metrics.AUC(),
                                                                              tfa.metrics.F1Score(num_classes=2,average="micro",threshold=0.9)])
-    early_stop = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=2)
+    early_stop = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=2)
 
     # Training the CNN on the Training set and evaluating it on the Test set
     cnn.fit(x = training_set, validation_data = test_set, epochs = 128,callbacks=[early_stop])
@@ -72,24 +76,54 @@ def model_func(train_data_dir,validation_data_dir,save_path1,save_path2):
     cnn.save_weights(save_path2)
 
 # Loop for all the possible conditions
-for i in methods:
-    if i == "BPS":
-        train_data_dir = root_dir + '/ML Project/stockpred/str1/train/'
-        validation_data_dir = root_dir + '/ML Project/stockpred/str1/val/'
-        save_path1 = target_dir + str(i+".h5")
-        save_path2 = target_dir + str(i+"weights.h5")
-        model_func(train_data_dir, validation_data_dir, save_path1, save_path2)
-
-    elif i == "BHPS":
-        train_data_dir = root_dir + '/ML Project/stockpred/str2/train/'
-        validation_data_dir = root_dir + '/ML Project/stockpred/str2/val/'
-        save_path1 = target_dir + str(i+".h5")
-        save_path2 = target_dir + str(i+"weights.h5")
-        model_func(train_data_dir,validation_data_dir,save_path1,save_path2)
-    else:
-        train_data_dir = root_dir + '/ML Project/stockpred/str3/train/'
-        validation_data_dir = root_dir + '/ML Project/stockpred/str3/val/'
-        save_path1 = target_dir + str(i+".h5")
-        save_path2 = target_dir + str(i+"weights.h5")
-        model_func(train_data_dir,validation_data_dir,save_path1,save_path2)
+for i in approach:
+    # BB Approach
+    if i == "BB":
+        # Loop for all the methods
+        for j in methods:
+            # Buy & Sell
+            if j == "BPS":
+                train_data_dir = root_dir + '/Image-Classification-for-Trading-Strategies/stockpred/bb/str1/train/'
+                validation_data_dir = root_dir + '/Image-Classification-for-Trading-Strategies/stockpred/bb/str1/val/'
+                save_path1 = target_dir + str(i+j+".h5")
+                save_path2 = target_dir + str(i+j+"weights.h5")
+                model_func(train_data_dir, validation_data_dir, save_path1, save_path2)
+            # Buy and [Hold + Sell]
+            elif j == "BHPS":
+                train_data_dir = root_dir + '/Image-Classification-for-Trading-Strategies/stockpred/bb/str2/train/'
+                validation_data_dir = root_dir + '/Image-Classification-for-Trading-Strategies/stockpred/bb/str2/val/'
+                save_path1 = target_dir + str(i+j+".h5")
+                save_path2 = target_dir + str(i+j+"weights.h5")
+                model_func(train_data_dir,validation_data_dir,save_path1,save_path2)
+            # [Buy + Hold], Sell
+            else:
+                train_data_dir = root_dir + '/Image-Classification-for-Trading-Strategies/stockpred/bb/str3/train/'
+                validation_data_dir = root_dir + '/Image-Classification-for-Trading-Strategies/stockpred/bb/str3/val/'
+                save_path1 = target_dir + str(i+j+".h5")
+                save_path2 = target_dir + str(i+j+"weights.h5")
+                model_func(train_data_dir,validation_data_dir,save_path1,save_path2)
+    elif i == "RSI":
+        # Loop for all the methods
+        for j in methods:
+            # Buy & Sell
+            if j == "BPS":
+                train_data_dir = root_dir + '/Image-Classification-for-Trading-Strategies/stockpred/rsi/str1/train/'
+                validation_data_dir = root_dir + '/Image-Classification-for-Trading-Strategies/stockpred/rsi/str1/val/'
+                save_path1 = target_dir + str(i+j+".h5")
+                save_path2 = target_dir + str(i+j+"weights.h5")
+                model_func(train_data_dir, validation_data_dir, save_path1, save_path2)
+            # Buy and [Hold + Sell]
+            elif j == "BHPS":
+                train_data_dir = root_dir + '/Image-Classification-for-Trading-Strategies/stockpred/rsi/str2/train/'
+                validation_data_dir = root_dir + '/Image-Classification-for-Trading-Strategies/stockpred/rsi/str2/val/'
+                save_path1 = target_dir + str(i+j+".h5")
+                save_path2 = target_dir + str(i+j+"weights.h5")
+                model_func(train_data_dir,validation_data_dir,save_path1,save_path2)
+            # [Buy + Hold], Sell
+            else:
+                train_data_dir = root_dir + '/Image-Classification-for-Trading-Strategies/stockpred/rsi/str3/train/'
+                validation_data_dir = root_dir + '/Image-Classification-for-Trading-Strategies/stockpred/rsi/str3/val/'
+                save_path1 = target_dir + str(i+j+".h5")
+                save_path2 = target_dir + str(i+j+"weights.h5")
+                model_func(train_data_dir,validation_data_dir,save_path1,save_path2)
 
