@@ -6,10 +6,8 @@ import tensorflow_addons as tfa
 root_dir = "C:/Users/saite/PycharmProjects/py38"
 target_dir = root_dir + "/Image-Classification-for-Trading-Strategies/stockpred/models/"
 
-# approach = ['BB','RSI','MACD']
-approach = ['RSI']
-methods = ['BPS']
-# methods = ['BPS','BHPS','BPHS']
+approach = ['BB','RSI']
+methods = ['BPS','BHPS','BPHS']
 
 train_data_dir = str()
 validation_data_dir = str()
@@ -69,11 +67,13 @@ def model_func(train_data_dir,validation_data_dir,save_path1,save_path2):
     early_stop = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=2)
 
     # Training the CNN on the Training set and evaluating it on the Test set
-    cnn.fit(x = training_set, validation_data = test_set, epochs = 128,callbacks=[early_stop])
+    cnn_model = cnn.fit(x = training_set, validation_data = test_set, epochs = 128,callbacks=[early_stop])
 
     # Save the model weights
     cnn.save(save_path1)
     cnn.save_weights(save_path2)
+    results = cnn_model.summary()
+    return results
 
 # Loop for all the possible conditions
 for i in approach:
@@ -102,7 +102,7 @@ for i in approach:
                 save_path1 = target_dir + str(i+j+".h5")
                 save_path2 = target_dir + str(i+j+"weights.h5")
                 model_func(train_data_dir,validation_data_dir,save_path1,save_path2)
-    elif i == "RSI":
+    else:
         # Loop for all the methods
         for j in methods:
             # Buy & Sell
@@ -126,4 +126,3 @@ for i in approach:
                 save_path1 = target_dir + str(i+j+".h5")
                 save_path2 = target_dir + str(i+j+"weights.h5")
                 model_func(train_data_dir,validation_data_dir,save_path1,save_path2)
-

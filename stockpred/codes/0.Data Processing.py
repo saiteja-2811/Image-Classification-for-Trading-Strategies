@@ -11,13 +11,13 @@ methods = ['BPS','BHPS','BPHS']
 str_dir_1 = str()
 str_dir_2 = str()
 
-# # Pull data from yahoo with a timeline from 1983 1st Jan to - 2021 17th June
-# ticker = '^GSPC'
-# df = yf.download(ticker, start='1983-01-01', end='2021-06-20')
-# df.reset_index(inplace=True)
-#
-# # Save the raw file to CSV
-# df.to_csv(root_dir + "/Image-Classification-for-Trading-Strategies/stockpred/data/stock_data.csv",index=False)
+# Pull data from yahoo with a timeline from 1983 1st Jan to - 2021 17th June
+ticker = '^GSPC'
+df = yf.download(ticker, start='1983-01-01', end='2021-06-20')
+df.reset_index(inplace=True)
+
+# Save the raw file to CSV
+df.to_csv(root_dir + "/Image-Classification-for-Trading-Strategies/stockpred/data/stock_data.csv",index=False)
 
 # Import the scraped data
 df = pd.read_csv(root_dir + "/Image-Classification-for-Trading-Strategies/stockpred/data/stock_data.csv")
@@ -104,19 +104,10 @@ for i in approach:
         print(df.bb_signal.value_counts(dropna=False))
 
     # RSI
-    elif i == "RSI":
+    else:
         rsi_signal = implement_rsi_approach(df['close'], 14)
         rsi_signal = pd.DataFrame(rsi_signal).rename(columns={'close': 'rsie'})
         df = pd.merge(df, rsi_signal, how='left', left_index=True, right_index=True)
-
-    # MACD
-    else:
-        df = df
-        # macd_signal = implement_macd_approach(df['close'], df['lower_macd'], df['upper_macd'])
-        # macd_signal = pd.DataFrame(macd_signal).rename(columns = {0:'macd_signal'}).set_index(df.index)
-        # df = df.join(macd_signal, how = 'inner')
-        # df.reset_index(inplace=True)
-        # df.macd_signal.value_counts(dropna=False)
 
 df.to_csv(root_dir + "/Image-Classification-for-Trading-Strategies/stockpred/data/df_rsi_out.csv")
 # Creating Images
@@ -161,7 +152,7 @@ def plotgraph(start,finish,method,approach,str_dir_1,str_dir_2):
                 plt.savefig(str_dir_1 + str(finish) + '.jpg', bbox_inches='tight') #buy + hold
 
     # RSI Approach
-    elif approach == "RSI":
+    else:
         # Save to separate directories
         if method == "BPS":
             # Buy(<30) & Sell(>70)
@@ -220,7 +211,7 @@ for i in approach:
                 for k in range(20, len(df.bb_signal)):
                     plotgraph(k - 20, k,j,i,str_dir_1, str_dir_2)
     # RSI Approach
-    elif i == "RSI":
+    else:
         # Loop for all the methods
         for j in methods:
             # Buy & Sell
@@ -242,33 +233,3 @@ for i in approach:
                 str_dir_2 = root_dir + "/Image-Classification-for-Trading-Strategies/stockpred/rsi/str3/train/sell/"
                 for k in range(14,len(df.rsie)):
                     plotgraph(k-14,k,j,i,str_dir_1, str_dir_2)
-
-    else:
-        # Loop for all the methods
-        for j in methods:
-            # Buy & Sell
-            if j == "BPS":
-                str_dir_1 = root_dir + "/Image-Classification-for-Trading-Strategies/stockpred/macd/str1/train/buy/"
-                str_dir_2 = root_dir + "/Image-Classification-for-Trading-Strategies/stockpred/macd/str1/train/sell/"
-                for k in range(21,len(df.bb_signal)):
-                    iter = 0
-                    if df.bb_signal[k] != 0:
-                        plotgraph(k - 20, k,j,i,str_dir_1, str_dir_2)
-            # Buy and [Hold + Sell]
-            elif j == "BHPS":
-                str_dir_1 = root_dir + "/Image-Classification-for-Trading-Strategies/stockpred/macd/str2/train/buy/"
-                str_dir_2 = root_dir + "/Image-Classification-for-Trading-Strategies/stockpred/macd/str2/train/hold_sell/"
-                for k in range(21, len(df.bb_signal)):
-                    plotgraph(k - 20, k,j,i,str_dir_1, str_dir_2)
-            # [Buy + Hold], Sell
-            else:
-                str_dir_1 = root_dir + "/Image-Classification-for-Trading-Strategies/stockpred/macd/str3/train/buy_hold/"
-                str_dir_2 = root_dir + "/Image-Classification-for-Trading-Strategies/stockpred/macd/str3/train/sell/"
-                for k in range(21, len(df.bb_signal)):
-                    plotgraph(k - 20, k,j,i,str_dir_1, str_dir_2)
-
-
-
-
-
-
