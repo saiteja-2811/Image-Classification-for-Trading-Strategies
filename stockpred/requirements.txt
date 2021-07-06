@@ -1,0 +1,6 @@
+tensorflow==2.4.1
+tensorflow-addons==0.13.0
+tensorflow-estimator==2.4.0
+mpl-finance==0.10.1
+fix-yahoo-finance==0.1.35
+shutilwhich==1.1.0
