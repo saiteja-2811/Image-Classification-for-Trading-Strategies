@@ -2,6 +2,8 @@
 import tensorflow as tf
 from keras.preprocessing.image import ImageDataGenerator
 import tensorflow_addons as tfa
+import matplotlib.pyplot as plt
+import pandas as pd
 # Part 1 - Data Preprocessing
 root_dir = "C:/Users/saite/PycharmProjects/py38"
 target_dir = root_dir + "/Image-Classification-for-Trading-Strategies/stockpred/models/"
@@ -15,7 +17,7 @@ save_path1 = str()
 save_path2 = str()
 
 # Function for the whole model
-def model_func(train_data_dir,validation_data_dir,save_path1,save_path2):
+def model_func(train_data_dir,validation_data_dir,save_path1,save_path2,i,j):
 
     # Preprocessing the Training set
     train_datagen = ImageDataGenerator(rescale = 1./255,
@@ -58,12 +60,16 @@ def model_func(train_data_dir,validation_data_dir,save_path1,save_path2):
     # Step 5 - Output Layer
     cnn.add(tf.keras.layers.Dense(units=1, activation='sigmoid'))
 
+    # #Step 6 - Metrics Addition
+    # cnn.add_metric(tf.keras.metrics.AUC(), name='auc')
+    # cnn.add_metric(tfa.metrics.F1Score(num_classes=2,average="micro"),name='f1_score')
+
     # Part 3 - Training the CNN
 
     # Compiling the CNN
     cnn.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy',
-                                                                             tf.keras.metrics.AUC(),
-                                                                             tfa.metrics.F1Score(num_classes=2,average="micro",threshold=0.9)])
+                                                                             tf.keras.metrics.AUC(name='auc'),
+                                                                             tfa.metrics.F1Score(num_classes=2,average="micro",threshold=0.5)])
     early_stop = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=2)
 
     # Training the CNN on the Training set and evaluating it on the Test set
@@ -72,9 +78,36 @@ def model_func(train_data_dir,validation_data_dir,save_path1,save_path2):
     # Save the model weights
     cnn.save(save_path1)
     cnn.save_weights(save_path2)
-    results = cnn_model.summary()
-    return results
 
+    # Saving the metrics plots
+    metrics = ['accuracy','val_accuracy','auc','val_auc','f1_score','val_f1_score']
+    # Save Results
+    metrics_path = "C:/Users/saite/PycharmProjects/py38/Image-Classification-for-Trading-Strategies/stockpred/results/metrics/" + i + "_" + j + "_" +"metrics.csv"
+    results = pd.DataFrame(columns=metrics,
+                           data=list(zip(cnn_model.history['accuracy'],
+                                         cnn_model.history['val_accuracy'],
+                                         cnn_model.history['auc'],
+                                         cnn_model.history['val_auc'],
+                                         cnn_model.history['f1_score'],
+                                         cnn_model.history['val_f1_score']
+                                         )
+                                    )
+                           )
+    results.to_csv(metrics_path)
+    k = 1
+    while(k<len(metrics)):
+        img_path = "C:/Users/saite/PycharmProjects/py38/Image-Classification-for-Trading-Strategies/stockpred/results/plots/" + str(i) + "_" + str(j) + "_" + str(metrics[k-1]) + ".png"
+        plt.plot(cnn_model.history[metrics[k-1]], label=metrics[k-1])
+        plt.plot(cnn_model.history[metrics[k]], label=metrics[k])
+        plt.xlabel('Epoch')
+        plt.ylabel(metrics[k-1])
+        plt.ylim([0.5, 1])
+        plt.legend(loc='lower right')
+        plt.savefig(img_path)
+        print(k, metrics[k - 1], metrics[k])
+        k = k+2
+        plt.cla()
+        plt.clf()
 # Loop for all the possible conditions
 for i in approach:
     # BB Approach
@@ -87,21 +120,21 @@ for i in approach:
                 validation_data_dir = root_dir + '/Image-Classification-for-Trading-Strategies/stockpred/bb/str1/val/'
                 save_path1 = target_dir + str(i+j+".h5")
                 save_path2 = target_dir + str(i+j+"weights.h5")
-                model_func(train_data_dir, validation_data_dir, save_path1, save_path2)
+                model_func(train_data_dir, validation_data_dir, save_path1, save_path2,i,j)
             # Buy and [Hold + Sell]
             elif j == "BHPS":
                 train_data_dir = root_dir + '/Image-Classification-for-Trading-Strategies/stockpred/bb/str2/train/'
                 validation_data_dir = root_dir + '/Image-Classification-for-Trading-Strategies/stockpred/bb/str2/val/'
                 save_path1 = target_dir + str(i+j+".h5")
                 save_path2 = target_dir + str(i+j+"weights.h5")
-                model_func(train_data_dir,validation_data_dir,save_path1,save_path2)
+                model_func(train_data_dir, validation_data_dir, save_path1, save_path2,i,j)
             # [Buy + Hold], Sell
             else:
                 train_data_dir = root_dir + '/Image-Classification-for-Trading-Strategies/stockpred/bb/str3/train/'
                 validation_data_dir = root_dir + '/Image-Classification-for-Trading-Strategies/stockpred/bb/str3/val/'
                 save_path1 = target_dir + str(i+j+".h5")
                 save_path2 = target_dir + str(i+j+"weights.h5")
-                model_func(train_data_dir,validation_data_dir,save_path1,save_path2)
+                model_func(train_data_dir, validation_data_dir, save_path1, save_path2,i,j)
     else:
         # Loop for all the methods
         for j in methods:
@@ -111,18 +144,18 @@ for i in approach:
                 validation_data_dir = root_dir + '/Image-Classification-for-Trading-Strategies/stockpred/rsi/str1/val/'
                 save_path1 = target_dir + str(i+j+".h5")
                 save_path2 = target_dir + str(i+j+"weights.h5")
-                model_func(train_data_dir, validation_data_dir, save_path1, save_path2)
+                model_func(train_data_dir, validation_data_dir, save_path1, save_path2,i,j)
             # Buy and [Hold + Sell]
             elif j == "BHPS":
                 train_data_dir = root_dir + '/Image-Classification-for-Trading-Strategies/stockpred/rsi/str2/train/'
                 validation_data_dir = root_dir + '/Image-Classification-for-Trading-Strategies/stockpred/rsi/str2/val/'
                 save_path1 = target_dir + str(i+j+".h5")
                 save_path2 = target_dir + str(i+j+"weights.h5")
-                model_func(train_data_dir,validation_data_dir,save_path1,save_path2)
+                model_func(train_data_dir, validation_data_dir, save_path1, save_path2,i,j)
             # [Buy + Hold], Sell
             else:
                 train_data_dir = root_dir + '/Image-Classification-for-Trading-Strategies/stockpred/rsi/str3/train/'
                 validation_data_dir = root_dir + '/Image-Classification-for-Trading-Strategies/stockpred/rsi/str3/val/'
                 save_path1 = target_dir + str(i+j+".h5")
                 save_path2 = target_dir + str(i+j+"weights.h5")
-                model_func(train_data_dir,validation_data_dir,save_path1,save_path2)
+                model_func(train_data_dir, validation_data_dir, save_path1, save_path2,i,j)

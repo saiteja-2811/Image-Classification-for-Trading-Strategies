@@ -42,7 +42,6 @@ def bb(data, sma, window):
     lower_bb = sma - std * 2
     return upper_bb, lower_bb
 df['upper_bb'], df['lower_bb'] = bb(df['close'], df['sma_20'], 20)
-df.to_csv(root_dir + "/Image-Classification-for-Trading-Strategies/stockpred/data/df_bb_out.csv")
 
 # Function for bb strategy
 def implement_bb_approach(data, lower_bb, upper_bb):
@@ -101,6 +100,7 @@ for i in approach:
         bb_signal = pd.DataFrame(bb_signal).rename(columns = {0:'bb_signal'}).set_index(df.index)
         df = df.join(bb_signal, how = 'inner')
         df.reset_index(inplace=True)
+        df.to_csv(root_dir + "/Image-Classification-for-Trading-Strategies/stockpred/data/df_bb_out.csv")
         print(df.bb_signal.value_counts(dropna=False))
 
     # RSI
@@ -108,8 +108,9 @@ for i in approach:
         rsi_signal = implement_rsi_approach(df['close'], 14)
         rsi_signal = pd.DataFrame(rsi_signal).rename(columns={'close': 'rsie'})
         df = pd.merge(df, rsi_signal, how='left', left_index=True, right_index=True)
+        df.to_csv(root_dir + "/Image-Classification-for-Trading-Strategies/stockpred/data/df_rsi_out.csv")
 
-df.to_csv(root_dir + "/Image-Classification-for-Trading-Strategies/stockpred/data/df_rsi_out.csv")
+
 # Creating Images
 def plotgraph(start,finish,method,approach,str_dir_1,str_dir_2):
     open = []
