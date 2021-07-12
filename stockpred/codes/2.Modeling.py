@@ -60,10 +60,6 @@ def model_func(train_data_dir,validation_data_dir,save_path1,save_path2,i,j):
     # Step 5 - Output Layer
     cnn.add(tf.keras.layers.Dense(units=1, activation='sigmoid'))
 
-    # #Step 6 - Metrics Addition
-    # cnn.add_metric(tf.keras.metrics.AUC(), name='auc')
-    # cnn.add_metric(tfa.metrics.F1Score(num_classes=2,average="micro"),name='f1_score')
-
     # Part 3 - Training the CNN
 
     # Compiling the CNN
