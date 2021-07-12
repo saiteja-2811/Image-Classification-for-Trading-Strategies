@@ -2,7 +2,7 @@
 
 This repository contains all the files of the stock prediction project, related to my Machine Learning class.
 
-![](stockpred/images/trading.png =250x250)
+![Trading](stockpred/images/trading.png =100x20)
 # Table of Contents
 - [Overview](#overview)
 - [Introduction](#introduction)
