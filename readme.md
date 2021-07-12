@@ -38,7 +38,7 @@ We will be analyzing the S&P 500 Global index data from `03-Jan-1983` till `18-J
 ## Trading Strategies
 ### 1. Bollinger Bands
 Let us check for the ```missing values``` for each variable first, and then we will impute them with the appropriate methods. 
-![Missing](images/Missing_Train.PNG)
+![Missing](stockpred/images/Missing_Train.PNG)
 
 #### Logical Background - BB
 - Drop ```cabin``` variable due to high missing percentage
