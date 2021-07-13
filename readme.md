@@ -58,7 +58,7 @@ ticker = '^GSPC'
 df = yf.download(ticker, start='1983-01-01', end='2021-06-20')
 ```
 #### Data Preparation
-- Below is the data structure of our tabular data. We use the `Close` value of each day for our whole analysis. Now we apply the `Bollinger Bands & RSI` strategies to the Close value and calculate the `Moving Average (SMA)`, `Bands (UB & LB)` and `RSI (RSI) index` for each day.
+Below is the data structure of our tabular data. We use the `Close` value of each day for our whole analysis. Now we apply the `Bollinger Bands & RSI` strategies to the Close value and calculate the `Moving Average (SMA)`, `Bands (UB & LB)` and `RSI (RSI) index` for each day.
 
 | Date     | Open    | High    | Low     | Close   | Adj Close | Volume     |
 |----------|---------|---------|---------|---------|-----------|------------|
