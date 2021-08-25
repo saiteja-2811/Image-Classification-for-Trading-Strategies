@@ -79,7 +79,7 @@ Based on the values of the above table, we generate signal indicators for each d
 | 11-05-21 | 4152.10 | 4175.86 | 4228.09 | 4123.62 | 43.41 |     0     |      0     |
 | 12-05-21 | 4063.04 | 4172.78 | 4242.17 | 4103.38 | 28.81 |     1     |      1     |
 
-##### Image Labeling
+#### Image Labeling
 As we created signals for three outcomes, `buy/sell/hold` let us limit our decisions to either buying or selling as a first strategy. So we are going to `create images and label them either buy/sell` based on the `BB Signal/ RSI Signal`. I have created images of size `125 x 125` and labeled them as `buy if the trading strategy suggests a buy` or sell otherwise. The distribution of images is below for each strategy.
 
 |      Strategy      |  Buy  |   Sell   |
