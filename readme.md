@@ -118,7 +118,7 @@ Now we have the images and model architecture ready, so let us proceed with the 
 I have used stratified selection approach to split the data into training & validation. You can see the split details in the below table for a `validation size of 20%` of the whole data. The training data is passed into the above model architecture. We are going to validate the model on the validation data on some performance metrics. 
 ![split](stockpred/images/Train_Val.png)
 #### Performance Metrics 
-I have selected Accuracy, Area Under the Curve and F1-Score as my model's performance metrics. After a lot of due diligence, I have achieved a validation `AUC of 0.99` for the `Buy/Sell` classification using both `BB & RSI strategies`. The other model's results are below.
+I have selected `Accuracy, Area Under the Curve and F1-Score` as my model's performance metrics. After a lot of due diligence, I have achieved a validation `AUC of 0.99` for the `Buy/Sell` classification using both `BB & RSI strategies`. The other model's results are below.
 ![metrics](stockpred/images/metrics.png)
 ## Conclusion
 - Based on the results of the study, we can conclude that we can build a system that identifies and replicates the way humans trade.
@@ -129,5 +129,3 @@ I have selected Accuracy, Area Under the Curve and F1-Score as my model's perfor
 ## Sources
 - [BB Image](https://www.dailyfx.com/education/bollinger-bands/forex-trading.html)
 - [RSI Image](https://www.bigtrends.com/education/is-the-great-rotation-in-the-stock-market-under-way-as-coronavirus-cases-surge-or-is-it-a-false-dawn-heres-what-experts-think/)
-
-
