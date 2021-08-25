@@ -4,7 +4,7 @@ from os.path import isfile, join
 import shutil
 
 # Root Directory
-root_dir = "C:/Users/saite/PycharmProjects/py38"
+root_dir = "/"
 approach = ['BB','RSI']
 methods = ['BPS','BHPS','BPHS']
 trade_options = [1,2]

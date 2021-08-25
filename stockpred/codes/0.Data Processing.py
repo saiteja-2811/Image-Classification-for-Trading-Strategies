@@ -5,7 +5,7 @@ import mpl_finance
 import fix_yahoo_finance as yf
 
 # Parameters
-root_dir = "C:/Users/saite/PycharmProjects/py38"
+root_dir = "/"
 approach = ['BB','RSI']
 methods = ['BPS','BHPS','BPHS']
 str_dir_1 = str()

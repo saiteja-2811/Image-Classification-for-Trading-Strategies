@@ -79,11 +79,12 @@ Based on the values of the above table, we generate signal indicators for each d
 | 12-05-21 | 4063.04 | 4172.78 | 4242.17 | 4103.38 | 28.81 |     1     |      1     |
 
 ##### Buy vs Sell
-
+As we created signals for three outcomes, `buy/sell/hold` let us limit our decisions to either buying or selling as a first strategy. So we are going to `create images and label them either buy/sell` based on the `BB Signal/ RSI Signal`.
 ##### Buy vs Sell/Hold
+This is the second approach where you either `buy` or `sell/hold`.These kinds fo decisions are useful for `bull` focused strategies in the stock markets where you always try to buy or else you do not buy.
 
 ### 2.Feature Engineering
-
+We now have the images labelled with buy/sell/hold after the above step. section to an image and then processing that image to 
 #### Convolution
 
 #### Max Pooling

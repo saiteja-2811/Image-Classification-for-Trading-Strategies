@@ -5,7 +5,7 @@ import tensorflow_addons as tfa
 import matplotlib.pyplot as plt
 import pandas as pd
 # Part 1 - Data Preprocessing
-root_dir = "C:/Users/saite/PycharmProjects/py38"
+root_dir = "/"
 target_dir = root_dir + "/Image-Classification-for-Trading-Strategies/stockpred/models/"
 
 approach = ['BB','RSI']
