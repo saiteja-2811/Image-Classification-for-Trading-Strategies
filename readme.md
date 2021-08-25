@@ -36,9 +36,6 @@ We will be analyzing the daily data of S&P 500 Global index from `03-Jan-1983` t
 ### 1. Bollinger Bands
 Bollinger Bands are widely used among traders. The indicator comprises an `upper band`, `lower band` and `moving average line`. The two trading bands are placed `two standard deviations` above and below the moving average (usually 20 periods) line. We use two standard deviations to capture a confidence interval of 95%. In the below image, we will make a `sell` decision when the `actual closing index crosses` the `upper band` and a `buy` decision when `actual closing index falls below` the `lower band`.
 
-```html
-<img src="stockpred/images/bb.png" alt="drawing" width="200"/>
-```
 ![bb](stockpred/images/bb.png)
 
 ### 2. Relative strength index
