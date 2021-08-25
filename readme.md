@@ -5,15 +5,14 @@ This repository contains all the files of the stock prediction project, related 
 - [Overview](#overview)
 - [Introduction](#introduction)
 - [Trading Strategies](#trading-strategies)
-  - [1. Bollinger Bands](#1-bollinger-bands)
-  - [2. Relative Strength Index](#2-relative-strength-index)
+  - [1. Bollinger Bands](#a-bollinger-bands)
+  - [2. Relative Strength Index](#b-relative-strength-index)
 - [Methodology](#methodology)
   - [1. Image Generation](#1image-generation)
     - [Data Collection](#data-collection)
     - [Data Preparation](#data-preparation)
     - [Signal Generation](#signal-generation)
-      - [Buy vs Sell](#buy-vs-sell)
-      - [Buy vs Sell/Hold](#buy-vs-sellhold)
+    - [Image Labeling](#image-labeling)
   - [2. Feature Engineering](#2feature-engineering)
     - [Rescaling](#rescaling)
     - [Model Architecture](#model-architecture)
@@ -30,12 +29,12 @@ Trading decisions have always been subjective i.e., there is `no definitive answ
 We will be analyzing the daily data of S&P 500 Global index from `03-Jan-1983` till `18-Jun-2021`.We will use this data and `generate images and labels (buy/sell/hold)` using some popular trading strategies. Then we use these `images and train the model` to classify the images and `compare that with the labels` that we have generated for performance evaluation.
 
 ## Trading Strategies
-### 1. Bollinger Bands
+### a. Bollinger Bands
 Bollinger Bands are widely used among traders. The indicator comprises an `upper band`, `lower band` and `moving average line`. The two trading bands are placed `two standard deviations` above and below the moving average (usually 20 periods) line. We use two standard deviations to capture a confidence interval of 95%. In the below image, we will make a `sell` decision when the `actual closing index crosses` the `upper band` and a `buy` decision when `actual closing index falls below` the `lower band`.
 
 ![bb](stockpred/images/bb.png)
 
-### 2. Relative strength index
+### b. Relative strength index
 The relative strength index (RSI) is a momentum indicator that measures the magnitude of recent price changes to evaluate `overbought` or `oversold` conditions in the price of a stock or other asset. The RSI is calculated using the formula `[100 - 100/(1+RS)]` where `RS` is the ratio of the Exponential Moving Average (window = 14) of all positive changes to the negative ones. An asset/stock is usually considered `overbought` => `ready to sell` when the RSI is `above 70%`and `oversold` => `ready to buy` when it is `below 30%`. In the below image, we `sell` at `red` arrows and `buy` at the `blue` ones.
 
 ![rsi](stockpred/images/RSI.png)
@@ -105,21 +104,30 @@ training_set = train_datagen.flow_from_directory('train_data_dir',
 ```
 #### Model Architecture
 This rescaled image of size `64 x 64 x 3` is passed as the input to the below network.
-![rsi](stockpred/images/model.png)
+![model](stockpred/images/model.png)
 
-- The convolution layers have `32 filters` of kernel size `3 x 3` and the `first & second` max pooling layers have `32 filters` of kernel size `2 x 2`. 
+- The convolution layers have `32 filters` of kernel size `3 x 3` and the max pooling layers have `32 filters` of kernel size `2 x 2`. 
 - The output after the first convolution layer has the size `62 x 62` because `Output Size = Input Size - Kernel Size + 1`.
 - The size of the output from the first max pooling layer is `31 x 31` because `Output Size = InputSize / Kernel Size`.
-- We need to flatten the `32 filters` of the images of size `14 x 14`, so we add a dense layer with `6272 (14 x 14 x32)` neurons, followed by a fully connected layer with size of 128.
+- We need to flatten the `32 filters` of the images of size `14 x 14`, so we add a dense layer with `6272 (14 x 14 x 32)` neurons, followed by a fully connected layer with size of 128.
 - The activation function used here is `sigmoid` for the buy or sell binary decision.
 
 ### 3.Modeling
-
+Now we have the images and model architecture ready, so let us proceed with the modeling part. The important things to keep in mind here is to not `overfit` the data and select a `robust performance metric` for a classification problem like this.
 #### Train & Validation Split
-
+I have used stratified selection approach to split the data into training & validation. You can see the split details in the below table for a `validation size of 20%` of the whole data. The training data is passed into the above model architecture. We are going to validate the model on the validation data on some performance metrics. 
+![split](stockpred/images/Train_Val.png)
 #### Performance Metrics 
-
+I have selected Accuracy, Area Under the Curve and F1-Score as my model's performance metrics. After a lot of due diligence, I have achieved a validation `AUC of 0.99` for the `Buy/Sell` classification using both `BB & RSI strategies`. The other model's results are below.
+![metrics](stockpred/images/metrics.png)
 ## Conclusion
-
+- Based on the results of the study, we can conclude that we can build a system that identifies and replicates the way humans trade.
+- Since 2010, the RSI has performed incredibly well with a median of close to 4% monthly returns for buys - [Source](https://www.moneyshow.com/articles/tebiwkly08-52167/)
+- This model can be improved over time to tell the trader how much to buy/sell, rather than a yes/no for an investment, to maximize the returns.
+- This model can be developed into a product to assist investment companies on a large scale with high computing capabilities.
+- If you like the approach and want to `replicate`, start with the `requirements.txt` file to install all the required packages and run the codes after this.
+## Sources
+- [BB Image](https://www.dailyfx.com/education/bollinger-bands/forex-trading.html)
+- [RSI Image](https://www.bigtrends.com/education/is-the-great-rotation-in-the-stock-market-under-way-as-coronavirus-cases-surge-or-is-it-a-false-dawn-heres-what-experts-think/)
 
 
