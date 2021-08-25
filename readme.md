@@ -18,8 +18,8 @@ This repository contains all the files of the stock prediction project, related 
       - [Buy vs Sell](#buy-vs-sell)
       - [Buy vs Sell/Hold](#buy-vs-sellhold)
   - [2. Feature Engineering](#2feature-engineering)
-    - [Convolution](#convolution)
-    - [Max Pooling](#max-pooling)
+    - [Rescaling](#rescaling)
+    - [Model Architecture](#model-architecture)
   - [3. Modeling](#3modeling)
     - [Train & Validation Split](#train--validation-split)
     - [Model Architecture](#model-architecture)    
@@ -30,7 +30,7 @@ This repository contains all the files of the stock prediction project, related 
 Trading decisions have always been subjective i.e., there is `no definitive answer` for a decision when a `trader buys/sells/holds` a stock. This means that the subject-matter experts are in high demand, and we need to `invest in automation` to minimize human intervention. So let us explore the feasibility of building a new system that can `replicate the way humans trade`.
 
 ## Introduction
-We will be analyzing the S&P 500 Global index data from `03-Jan-1983` till `18-Jun-2021`.We will use this data and `generate images and labels (buy/sell/hold)` using some popular trading strategies. Then we use these `images and train the model` to classify the images and `compare that with the labels` that we have generated for performance evaluation.
+We will be analyzing the daily data of S&P 500 Global index from `03-Jan-1983` till `18-Jun-2021`.We will use this data and `generate images and labels (buy/sell/hold)` using some popular trading strategies. Then we use these `images and train the model` to classify the images and `compare that with the labels` that we have generated for performance evaluation.
 
 ## Trading Strategies
 ### 1. Bollinger Bands
@@ -78,18 +78,42 @@ Based on the values of the above table, we generate signal indicators for each d
 | 11-05-21 | 4152.10 | 4175.86 | 4228.09 | 4123.62 | 43.41 |     0     |      0     |
 | 12-05-21 | 4063.04 | 4172.78 | 4242.17 | 4103.38 | 28.81 |     1     |      1     |
 
-##### Buy vs Sell
-As we created signals for three outcomes, `buy/sell/hold` let us limit our decisions to either buying or selling as a first strategy. So we are going to `create images and label them either buy/sell` based on the `BB Signal/ RSI Signal`.
-##### Buy vs Sell/Hold
-This is the second approach where you either `buy` or `sell/hold`.These kinds fo decisions are useful for `bull` focused strategies in the stock markets where you always try to buy or else you do not buy.
+##### Image Labeling
+As we created signals for three outcomes, `buy/sell/hold` let us limit our decisions to either buying or selling as a first strategy. So we are going to `create images and label them either buy/sell` based on the `BB Signal/ RSI Signal`. I have created images of size `125 x 125` and labeled them as `buy if the trading strategy suggests a buy` or sell otherwise. The distribution of images is below for each strategy.
+
+|      Strategy      |  Buy  |   Sell   |
+|:------------------:|:-----:|:--------:|
+| Bollinger Bands    |  433  |   461    |
+| Rel Strength Index |  651  |   1721   |
 
 ### 2.Feature Engineering
-We now have the images labelled with buy/sell/hold after the above step. section to an image and then processing that image to 
-#### Convolution
+We now have the images, but we need to capture the spatial information and reduce the dimensions of the neural network that we are planning to train. I have performed the below steps to achieve these goals.
 
-#### Max Pooling
+#### Rescaling
+The image is now in the RGB format, we will rescale the image into size of `64 x 64 x 3` using the below code.
+```python
+# Import the Libraries
+from keras.preprocessing.image import ImageDataGenerator
+# Preprocessing the Training set
+train_datagen = ImageDataGenerator(rescale = 1./255,
+                                   shear_range = 0.2,
+                                   zoom_range = 0.2,
+                                   horizontal_flip = True)
 
+training_set = train_datagen.flow_from_directory('train_data_dir',
+                                                 target_size = (64, 64),
+                                                 batch_size = 32,
+                                                 class_mode = 'binary')
+```
 #### Model Architecture
+This rescaled image of size `64 x 64 x 3` is passed as the input to the below network.
+![rsi](stockpred/images/model.png)
+
+- The convolution layers have `32 filters` of kernel size `3 x 3` and the `first & second` max pooling layers have `32 filters` of kernel size `2 x 2`. 
+- The output after the first convolution layer has the size `62 x 62` because `Output Size = Input Size - Kernel Size + 1`.
+- The size of the output from the first max pooling layer is `31 x 31` because `Output Size = InputSize / Kernel Size`.
+- We need to flatten the `32 filters` of the images of size `14 x 14`, so we add a dense layer with `6272 (14 x 14 x32)` neurons, followed by a fully connected layer with size of 128.
+- The activation function used here is `sigmoid` for the buy or sell binary decision.
 
 ### 3.Modeling
 
