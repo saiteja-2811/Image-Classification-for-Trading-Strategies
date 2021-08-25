@@ -1,8 +1,5 @@
 # Trading Strategies - Image Classification
-
 This repository contains all the files of the stock prediction project, related to my Machine Learning class.
-
-![Trading](stockpred/images/trading.png)
 
 # Table of Contents
 - [Overview](#overview)
